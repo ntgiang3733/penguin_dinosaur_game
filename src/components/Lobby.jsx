@@ -63,9 +63,8 @@ export default function Lobby({ onJoinedRoom }) {
     <div className="lobby-container">
       <div className="lobby-card glass-card">
         <div className="lobby-header">
-          <div className="logo-icon">🔤</div>
-          <h1 className="game-title">Word Chain</h1>
-          <p className="game-subtitle">Nối Từ Tiếng Anh Online</p>
+          <div className="logo-icon">🐧 - 🦖</div>
+          <h1 className="game-title">PENGUIN - DINOSAUR</h1>
         </div>
 
         <div className="lobby-rules">

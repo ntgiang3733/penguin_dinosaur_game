@@ -1,13 +1,33 @@
 import { useState } from "react";
-import { createRoom, joinRoom } from "../firebase/gameService";
+import { createRoom, joinRoom, joinDefaultRoom } from "../firebase/gameService";
 
 export default function Lobby({ onJoinedRoom }) {
   const [playerName, setPlayerName] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
+  const [isJoiningDefault, setIsJoiningDefault] = useState(false);
   const [error, setError] = useState("");
   const [mode, setMode] = useState(null); // null, 'create', 'join'
+
+  const handleJoinDefault = async () => {
+    if (!playerName.trim()) {
+      setError("Vui lòng nhập tên của bạn");
+      return;
+    }
+
+    setIsJoiningDefault(true);
+    setError("");
+
+    try {
+      const result = await joinDefaultRoom(playerName.trim());
+      onJoinedRoom(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsJoiningDefault(false);
+    }
+  };
 
   const handleCreateRoom = async () => {
     if (!playerName.trim()) {
@@ -95,20 +115,37 @@ export default function Lobby({ onJoinedRoom }) {
           <div className="lobby-actions">
             <button
               className="btn btn-primary"
-              onClick={() => setMode("create")}
-              disabled={!playerName.trim()}
+              onClick={handleJoinDefault}
+              disabled={isJoiningDefault || !playerName.trim()}
             >
-              <span className="btn-icon">🏠</span>
-              Tạo Phòng Mới
+              {isJoiningDefault ? (
+                <span className="loading-spinner"></span>
+              ) : (
+                <>
+                  <span className="btn-icon">⚡</span>
+                  Chơi Luôn
+                </>
+              )}
             </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => setMode("join")}
-              disabled={!playerName.trim()}
-            >
-              <span className="btn-icon">🚪</span>
-              Tham Gia Phòng
-            </button>
+            <div className="divider"><span>HOẶC</span></div>
+            <div className="lobby-sub-actions">
+              <button
+                className="btn btn-secondary btn-small"
+                onClick={() => setMode("create")}
+                disabled={!playerName.trim()}
+              >
+                <span className="btn-icon">🏠</span>
+                Tạo Phòng
+              </button>
+              <button
+                className="btn btn-secondary btn-small"
+                onClick={() => setMode("join")}
+                disabled={!playerName.trim()}
+              >
+                <span className="btn-icon">🚪</span>
+                Vào Phòng
+              </button>
+            </div>
           </div>
         )}
 

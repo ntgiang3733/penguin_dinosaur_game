@@ -181,6 +181,83 @@ export async function handleTimeout(roomId, loserRole) {
 }
 
 /**
+ * Join a default "Quick Play" room
+ */
+export async function joinDefaultRoom(playerName) {
+  const roomId = "PENGUIN_DINO";
+  const roomRef = ref(db, `rooms/${roomId}`);
+  const snapshot = await get(roomRef);
+  const playerId = generatePlayerId();
+
+  if (!snapshot.exists()) {
+    // Create the default room if it doesn't exist
+    const roomData = {
+      status: "waiting",
+      players: {
+        player1: {
+          name: playerName,
+          score: 0,
+          id: playerId,
+          connected: true,
+        },
+      },
+      currentTurn: "player1",
+      turnStartTime: null,
+      lastWord: "",
+      words: [],
+      winner: null,
+      createdAt: Date.now(),
+    };
+    await set(roomRef, roomData);
+    const playerRef = ref(db, `rooms/${roomId}/players/player1/connected`);
+    onDisconnect(playerRef).set(false);
+    return { roomId, playerId, playerRole: "player1" };
+  }
+
+  const roomData = snapshot.val();
+
+  // If room is finished, reset it for a new game
+  if (roomData.status === "finished") {
+    await resetRoom(roomId);
+    return joinDefaultRoom(playerName);
+  }
+
+  // Check if player1 is disconnected or empty
+  if (!roomData.players?.player1 || !roomData.players.player1.connected) {
+    await update(roomRef, {
+      "players/player1": {
+        name: playerName,
+        score: 0,
+        id: playerId,
+        connected: true,
+      },
+    });
+    const playerRef = ref(db, `rooms/${roomId}/players/player1/connected`);
+    onDisconnect(playerRef).set(false);
+    return { roomId, playerId, playerRole: "player1" };
+  }
+
+  // Try to join as player2
+  if (!roomData.players?.player2 || !roomData.players.player2.connected) {
+    await update(roomRef, {
+      "players/player2": {
+        name: playerName,
+        score: 0,
+        id: playerId,
+        connected: true,
+      },
+      status: "playing",
+      turnStartTime: Date.now(),
+    });
+    const playerRef = ref(db, `rooms/${roomId}/players/player2/connected`);
+    onDisconnect(playerRef).set(false);
+    return { roomId, playerId, playerRole: "player2" };
+  }
+
+  throw new Error("Phòng mặc định hiện đã đầy. Vui lòng thử lại sau hoặc tự tạo phòng.");
+}
+
+/**
  * Listen to room changes in real-time
  */
 export function listenToRoom(roomId, callback) {

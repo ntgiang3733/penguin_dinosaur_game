@@ -114,6 +114,11 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
           isMyTurn={isMyTurn}
         />
 
+        <div className="score-goal glass-card">
+          <span className="goal-label">Mục tiêu</span>
+          <span className="goal-value">70</span>
+        </div>
+
         <div className={`player-score ${isMyTurn && myRole === "player2" ? "active" : ""} ${myRole === "player2" ? "me" : ""}`}>
           <span className="ps-name">{myRole === "player2" ? myName : opponentName}</span>
           <span className="ps-score">{myRole === "player2" ? myScore : opponentScore}</span>
@@ -205,8 +210,9 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
                   : "Chưa có từ nào..."}
               </div>
             ) : (
-              words.map((word, i) => {
-                const isPlayer1Word = i % 2 === 0;
+              [...words].reverse().map((word, i) => {
+                const originalIndex = words.length - 1 - i;
+                const isPlayer1Word = originalIndex % 2 === 0;
                 const wordPlayer = isPlayer1Word
                   ? roomData.players?.player1?.name
                   : roomData.players?.player2?.name;
@@ -216,7 +222,7 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
 
                 return (
                   <div
-                    key={i}
+                    key={originalIndex}
                     className={`word-item ${isMe ? "my-word" : "opponent-word"} slide-up`}
                     style={{ animationDelay: `${i * 0.05}s` }}
                   >

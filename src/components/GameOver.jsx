@@ -33,6 +33,10 @@ export default function GameOver({ roomData, playerRole, onPlayAgain, onBackToLo
     reasonText = isWinner
       ? "Đối thủ đã hết thời gian!"
       : "Bạn đã hết thời gian!";
+  } else if (finishReason === "score_limit") {
+    reasonText = isWinner
+      ? "Chúc mừng! Bạn đã đạt mốc 70 điểm trước!"
+      : "Đối thủ đã đạt mốc 70 điểm trước!";
   } else if (finishReason === "disconnect") {
     reasonText = "Đối thủ đã ngắt kết nối.";
   }

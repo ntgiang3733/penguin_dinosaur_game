@@ -139,13 +139,22 @@ export async function submitWord(roomId, word, playerRole) {
   const currentScore = roomData.players[playerRole]?.score || 0;
   const nextTurn = playerRole === "player1" ? "player2" : "player1";
 
+  const newScore = currentScore + lowerWord.length;
+  const isWinner = newScore >= 70;
+
   const updates = {
     lastWord: lowerWord,
     words: [...currentWords, lowerWord],
     currentTurn: nextTurn,
     turnStartTime: Date.now(),
-    [`players/${playerRole}/score`]: currentScore + lowerWord.length,
+    [`players/${playerRole}/score`]: newScore,
   };
+
+  if (isWinner) {
+    updates.status = "finished";
+    updates.winner = playerRole;
+    updates.finishReason = "score_limit";
+  }
 
   await update(roomRef, updates);
 }

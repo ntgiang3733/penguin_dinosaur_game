@@ -687,12 +687,33 @@ body {
   color: var(--accent-red);
 }
 
-.timer-label {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
+/* Score Goal Indicator */
+.score-goal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  min-width: 60px;
+  border-radius: var(--radius-md);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }
+
+.goal-label {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  letter-spacing: 0.5px;
+}
+
+.goal-value {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--accent-orange);
+}
+
 
 /* Game Area */
 .game-area {
@@ -1279,12 +1300,25 @@ body {
     font-size: 28px;
   }
 
-  .gameover-actions {
-    flex-direction: column;
-    padding: 16px 20px 24px;
+  .input-wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .word-summary {
-    padding: 0 20px 12px;
+  .required-letter {
+    width: 100%;
+    height: 48px;
+    margin-bottom: 4px;
+  }
+
+  .word-input {
+    width: 100%;
+    order: 2;
+  }
+
+  .submit-btn {
+    width: 100%;
+    order: 3;
+    margin-top: 8px;
   }
 }

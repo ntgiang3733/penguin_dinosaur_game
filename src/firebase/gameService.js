@@ -219,12 +219,25 @@ export async function joinDefaultRoom(playerName) {
 
   // If room is finished, reset it for a new game
   if (roomData.status === "finished") {
-    await resetRoom(roomId);
+    await update(roomRef, {
+      status: "waiting",
+      currentTurn: "player1",
+      turnStartTime: null,
+      lastWord: "",
+      words: [],
+      winner: null,
+      finishReason: null,
+      "players/player1/score": 0,
+      "players/player1/connected": false,
+      "players/player2/score": 0,
+      "players/player2/connected": false,
+    });
     return joinDefaultRoom(playerName);
   }
 
   // Check if player1 is disconnected or empty
   if (!roomData.players?.player1 || !roomData.players.player1.connected) {
+    const hasPlayer2 = roomData.players?.player2?.connected;
     await update(roomRef, {
       "players/player1": {
         name: playerName,
@@ -232,6 +245,8 @@ export async function joinDefaultRoom(playerName) {
         id: playerId,
         connected: true,
       },
+      status: hasPlayer2 ? "playing" : "waiting",
+      turnStartTime: hasPlayer2 ? Date.now() : null,
     });
     const playerRef = ref(db, `rooms/${roomId}/players/player1/connected`);
     onDisconnect(playerRef).set(false);

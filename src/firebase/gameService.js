@@ -1,3 +1,4 @@
+import { WIN_PONT } from "../constants";
 import { db } from "./config";
 import {
   ref,
@@ -140,7 +141,7 @@ export async function submitWord(roomId, word, playerRole) {
   const nextTurn = playerRole === "player1" ? "player2" : "player1";
 
   const newScore = currentScore + lowerWord.length;
-  const isWinner = newScore >= 70;
+  const isWinner = newScore >= WIN_PONT;
 
   const updates = {
     lastWord: lowerWord,

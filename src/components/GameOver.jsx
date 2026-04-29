@@ -1,3 +1,5 @@
+import { WIN_PONT } from "../constants";
+
 export default function GameOver({ roomData, playerRole, onPlayAgain, onBackToLobby }) {
   const myRole = playerRole;
   const opponentRole = myRole === "player1" ? "player2" : "player1";
@@ -35,8 +37,8 @@ export default function GameOver({ roomData, playerRole, onPlayAgain, onBackToLo
       : "Bạn đã hết thời gian!";
   } else if (finishReason === "score_limit") {
     reasonText = isWinner
-      ? "Chúc mừng! Bạn đã đạt mốc 70 điểm trước!"
-      : "Đối thủ đã đạt mốc 70 điểm trước!";
+      ? `Chúc mừng! Bạn đã đạt mốc ${WIN_PONT} điểm trước!`
+      : `Đối thủ đã đạt mốc ${WIN_PONT} điểm trước!`;
   } else if (finishReason === "disconnect") {
     reasonText = "Đối thủ đã ngắt kết nối.";
   }

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Timer from "./Timer";
 import { submitWord, handleTimeout } from "../firebase/gameService";
 import { validateWord, checkChainRule, checkDuplicate } from "../utils/wordValidator";
+import { TIME_PER_TURN, WIN_PONT } from "../constants";
 
 export default function GameBoard({ roomData, roomId, playerRole }) {
   const [inputWord, setInputWord] = useState("");
@@ -109,14 +110,14 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
 
         <Timer
           turnStartTime={roomData.turnStartTime}
-          duration={30}
+          duration={TIME_PER_TURN}
           onTimeout={onTimeout}
           isMyTurn={isMyTurn}
         />
 
         <div className="score-goal glass-card">
           <span className="goal-label">Mục tiêu</span>
-          <span className="goal-value">70</span>
+          <span className="goal-value">{WIN_PONT}</span>
         </div>
 
         <div className={`player-score ${isMyTurn && myRole === "player2" ? "active" : ""} ${myRole === "player2" ? "me" : ""}`}>

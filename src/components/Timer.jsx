@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { TIME_PER_TURN } from "../constants";
 
-export default function Timer({ turnStartTime, duration = 30, onTimeout, isMyTurn }) {
+export default function Timer({ turnStartTime, duration = TIME_PER_TURN, onTimeout, isMyTurn }) {
   const [timeLeft, setTimeLeft] = useState(duration);
   const timerRef = useRef(null);
   const hasTimedOut = useRef(false);

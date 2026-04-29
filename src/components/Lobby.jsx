@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createRoom, joinRoom, joinDefaultRoom } from "../firebase/gameService";
+import { TIME_PER_TURN } from "../constants";
 
 export default function Lobby({ onJoinedRoom }) {
   const [playerName, setPlayerName] = useState("");
@@ -90,7 +91,7 @@ export default function Lobby({ onJoinedRoom }) {
         <div className="lobby-rules">
           <h3>📜 Luật Chơi</h3>
           <ul>
-            <li>Nhập 1 từ tiếng Anh mỗi lượt (30 giây)</li>
+            <li>Nhập 1 từ tiếng Anh mỗi lượt ({TIME_PER_TURN} giây)</li>
             <li>Từ tiếp theo phải bắt đầu bằng chữ cái cuối của từ trước</li>
             <li>Không được lặp lại từ đã dùng</li>
             <li>Điểm = số chữ cái trong từ</li>

@@ -90,7 +90,7 @@ export default function Lobby({ onJoinedRoom }) {
     <div className="lobby-container">
       <div className="lobby-card glass-card">
         <div className="lobby-header">
-          <div className="logo-icon">🐧 ❌ 🦖</div>
+          <div className="logo-icon">🐧 ⚡️ 🦖</div>
           <h1 className="game-title">PENGUIN - DINOSAUR</h1>
         </div>
 

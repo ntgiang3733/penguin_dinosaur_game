@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createRoom, joinRoom, joinDefaultRoom } from "../firebase/gameService";
 import { TIME_PER_TURN } from "../constants";
+import GameHistory from "./GameHistory";
 
 export default function Lobby({ onJoinedRoom }) {
   const [playerName, setPlayerName] = useState("");
@@ -10,6 +11,7 @@ export default function Lobby({ onJoinedRoom }) {
   const [isJoiningDefault, setIsJoiningDefault] = useState(false);
   const [error, setError] = useState("");
   const [mode, setMode] = useState(null); // null, 'create', 'join'
+  const [showHistory, setShowHistory] = useState(false);
 
   const handleJoinDefault = async () => {
     if (!playerName.trim()) {
@@ -80,11 +82,15 @@ export default function Lobby({ onJoinedRoom }) {
     }
   };
 
+  if (showHistory) {
+    return <GameHistory onBack={() => setShowHistory(false)} />;
+  }
+
   return (
     <div className="lobby-container">
       <div className="lobby-card glass-card">
         <div className="lobby-header">
-          <div className="logo-icon">🐧 - 🦖</div>
+          <div className="logo-icon">🐧 ❌ 🦖</div>
           <h1 className="game-title">PENGUIN - DINOSAUR</h1>
         </div>
 
@@ -205,6 +211,16 @@ export default function Lobby({ onJoinedRoom }) {
               ← Quay lại
             </button>
           </div>
+        )}
+
+        {!mode && (
+          <button
+            className="btn btn-ghost btn-history"
+            onClick={() => setShowHistory(true)}
+            style={{ marginTop: 8, width: "100%" }}
+          >
+            📋 Xem Lịch Sử Game
+          </button>
         )}
 
         {error && (

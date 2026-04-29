@@ -8,7 +8,6 @@ import {
   onValue,
   off,
   push,
-  serverTimestamp,
   onDisconnect,
   remove,
 } from "firebase/database";
@@ -157,7 +156,30 @@ export async function submitWord(roomId, word, playerRole) {
     updates.finishReason = "score_limit";
   }
 
-  await update(roomRef, updates);
+  if (isWinner) {
+    const historyId = push(ref(db, "gameHistory")).key;
+    const rootUpdates = {};
+    for (const [key, value] of Object.entries(updates)) {
+      rootUpdates[`rooms/${roomId}/${key}`] = value;
+    }
+    const p1Score = playerRole === "player1" ? newScore : (roomData.players.player1?.score || 0);
+    const p2Score = playerRole === "player2" ? newScore : (roomData.players.player2?.score || 0);
+
+    rootUpdates[`gameHistory/${historyId}`] = {
+      roomId,
+      player1: { name: roomData.players.player1?.name || "?", score: p1Score },
+      player2: { name: roomData.players.player2?.name || "?", score: p2Score },
+      winner: playerRole,
+      finishReason: "score_limit",
+      words: [...currentWords, lowerWord],
+      totalWords: currentWords.length + 1,
+      startedAt: roomData.createdAt || Date.now(),
+      finishedAt: Date.now(),
+    };
+    await update(ref(db), rootUpdates);
+  } else {
+    await update(roomRef, updates);
+  }
 }
 
 /**
@@ -174,10 +196,22 @@ export async function handleTimeout(roomId, loserRole) {
 
   const winnerRole = loserRole === "player1" ? "player2" : "player1";
 
-  await update(roomRef, {
-    status: "finished",
-    winner: winnerRole,
-    finishReason: "timeout",
+  const historyId = push(ref(db, "gameHistory")).key;
+  await update(ref(db), {
+    [`rooms/${roomId}/status`]: "finished",
+    [`rooms/${roomId}/winner`]: winnerRole,
+    [`rooms/${roomId}/finishReason`]: "timeout",
+    [`gameHistory/${historyId}`]: {
+      roomId,
+      player1: { name: roomData.players.player1?.name || "?", score: roomData.players.player1?.score || 0 },
+      player2: { name: roomData.players.player2?.name || "?", score: roomData.players.player2?.score || 0 },
+      winner: winnerRole,
+      finishReason: "timeout",
+      words: roomData.words || [],
+      totalWords: (roomData.words || []).length,
+      startedAt: roomData.createdAt || Date.now(),
+      finishedAt: Date.now(),
+    },
   });
 }
 
@@ -317,4 +351,22 @@ export async function resetRoom(roomId) {
     "players/player1/score": 0,
     "players/player2/score": 0,
   });
+}
+
+/**
+ * Get game history, sorted by most recent first
+ */
+export async function getGameHistory(limit = 20) {
+  const historyRef = ref(db, "gameHistory");
+  const snapshot = await get(historyRef);
+
+  if (!snapshot.exists()) return [];
+
+  const data = snapshot.val();
+  const entries = Object.entries(data).map(([id, game]) => ({
+    id,
+    ...game,
+  }));
+
+  return entries.sort((a, b) => b.finishedAt - a.finishedAt).slice(0, limit);
 }

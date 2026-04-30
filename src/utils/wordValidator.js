@@ -70,3 +70,56 @@ export function checkDuplicate(word, usedWords) {
   }
   return { valid: true };
 }
+
+/**
+ * Check if word meets minimum length requirement
+ */
+export function checkMinLength(word, minLength) {
+  if (word.length < minLength) {
+    return { valid: false, reason: `Từ phải có ít nhất ${minLength} ký tự` };
+  }
+  return { valid: true };
+}
+
+/**
+ * Check if word starts with the required letter
+ */
+export function checkStartLetter(word, letter) {
+  if (word.charAt(0).toLowerCase() !== letter.toLowerCase()) {
+    return { valid: false, reason: `Từ phải bắt đầu bằng chữ "${letter.toUpperCase()}"` };
+  }
+  return { valid: true };
+}
+
+/**
+ * Check if word ends with the required letter
+ */
+export function checkEndLetter(word, letter) {
+  if (word.charAt(word.length - 1).toLowerCase() !== letter.toLowerCase()) {
+    return { valid: false, reason: `Từ phải kết thúc bằng chữ "${letter.toUpperCase()}"` };
+  }
+  return { valid: true };
+}
+
+/**
+ * Validate word against the active game rule
+ */
+export function checkGameRule(word, rule, lastWord) {
+  const type = rule?.type || "chain";
+
+  switch (type) {
+    case "chain":
+      return checkChainRule(word, lastWord);
+    case "min_length": {
+      const chain = checkChainRule(word, lastWord);
+      if (!chain.valid) return chain;
+      return checkMinLength(word, 5);
+    }
+    case "start_with":
+      return checkStartLetter(word, rule.letter);
+    case "end_with":
+      return checkEndLetter(word, rule.letter);
+    default:
+      return checkChainRule(word, lastWord);
+  }
+}

@@ -1,4 +1,4 @@
-import { WIN_PONT } from "../constants";
+import { WIN_PONT, pickRandomRule } from "../constants";
 import { db } from "./config";
 import {
   ref,
@@ -60,6 +60,7 @@ export async function createRoom(playerName) {
     lastWord: "",
     words: [],
     winner: null,
+    rule: pickRandomRule(),
     createdAt: Date.now(),
   };
 
@@ -241,6 +242,7 @@ export async function joinDefaultRoom(playerName) {
       lastWord: "",
       words: [],
       winner: null,
+      rule: pickRandomRule(),
       createdAt: Date.now(),
     };
     await set(roomRef, roomData);
@@ -261,6 +263,7 @@ export async function joinDefaultRoom(playerName) {
       words: [],
       winner: null,
       finishReason: null,
+      rule: pickRandomRule(),
       "players/player1/score": 0,
       "players/player1/connected": false,
       "players/player2/score": 0,
@@ -348,6 +351,7 @@ export async function resetRoom(roomId) {
     words: [],
     winner: null,
     finishReason: null,
+    rule: pickRandomRule(),
     "players/player1/score": 0,
     "players/player2/score": 0,
   });

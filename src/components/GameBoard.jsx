@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import Timer from "./Timer";
 import { submitWord, handleTimeout } from "../firebase/gameService";
-import { validateWord, checkChainRule, checkDuplicate } from "../utils/wordValidator";
-import { TIME_PER_TURN, WIN_PONT } from "../constants";
+import { validateWord, checkGameRule, checkDuplicate } from "../utils/wordValidator";
+import { TIME_PER_TURN, WIN_PONT, getRuleDescription } from "../constants";
 
 export default function GameBoard({ roomData, roomId, playerRole }) {
   const [inputWord, setInputWord] = useState("");
@@ -23,7 +23,11 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
 
   const lastWord = roomData.lastWord || "";
   const words = roomData.words || [];
-  const requiredLetter = lastWord ? lastWord.charAt(lastWord.length - 1).toUpperCase() : "";
+  const ruleType = roomData.rule?.type || "chain";
+  const isChainRule = ruleType === "chain" || ruleType === "min_length";
+  const requiredLetter = isChainRule && lastWord
+    ? lastWord.charAt(lastWord.length - 1).toUpperCase()
+    : roomData.rule?.letter?.toUpperCase() || "";
 
   // Auto focus input when it's my turn
   useEffect(() => {
@@ -43,10 +47,10 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
     setValidationStatus("checking");
 
     try {
-      // 1. Check chain rule
-      const chainCheck = checkChainRule(word, lastWord);
-      if (!chainCheck.valid) {
-        setError(chainCheck.reason);
+      // 1. Check game rule
+      const ruleCheck = checkGameRule(word, roomData.rule, lastWord);
+      if (!ruleCheck.valid) {
+        setError(ruleCheck.reason);
         setValidationStatus("invalid");
         setIsSubmitting(false);
         return;
@@ -118,10 +122,20 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
         {/* Turn Indicator */}
         <div className={`turn-indicator ${isMyTurn ? "my-turn" : "opponent-turn"}`}>
           {isMyTurn ? (
-            <span>🎯 Lượt của bạn! Hãy nhập một từ{requiredLetter ? ` bắt đầu bằng "${requiredLetter}"` : ""}</span>
+            <span>
+              🎯 Lượt của bạn! Hãy nhập một từ
+              {ruleType === "end_with" && requiredLetter ? ` kết thúc bằng "${requiredLetter}"` : ""}
+              {ruleType !== "end_with" && requiredLetter ? ` bắt đầu bằng "${requiredLetter}"` : ""}
+            </span>
           ) : (
             <span>⏳ Đợi {opponentName} nhập từ...</span>
           )}
+        </div>
+
+        {/* Rule Display */}
+        <div className="rule-display">
+          <span className="rule-icon">🎲</span>
+          Luật: {getRuleDescription(roomData.rule)}
         </div>
 
         {/* Last Word Display */}

@@ -32,13 +32,6 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
     }
   }, [isMyTurn]);
 
-  // Scroll word list to bottom
-  useEffect(() => {
-    if (wordListRef.current) {
-      wordListRef.current.scrollTop = wordListRef.current.scrollHeight;
-    }
-  }, [words.length]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -108,13 +101,6 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
           {roomData.currentTurn === "player1" && <span className="turn-badge">🎯</span>}
         </div>
 
-        <Timer
-          turnStartTime={roomData.turnStartTime}
-          duration={TIME_PER_TURN}
-          onTimeout={onTimeout}
-          isMyTurn={isMyTurn}
-        />
-
         <div className="score-goal glass-card">
           <span className="goal-label">Mục tiêu</span>
           <span className="goal-value">{WIN_PONT}</span>
@@ -158,9 +144,12 @@ export default function GameBoard({ roomData, roomId, playerRole }) {
         {/* Word Input */}
         <form className="word-input-form" onSubmit={handleSubmit}>
           <div className="input-wrapper">
-            {requiredLetter && (
-              <span className="required-letter">{requiredLetter}</span>
-            )}
+            <Timer
+              turnStartTime={roomData.turnStartTime}
+              duration={TIME_PER_TURN}
+              onTimeout={onTimeout}
+              isMyTurn={isMyTurn}
+            />
             <input
               ref={inputRef}
               type="text"

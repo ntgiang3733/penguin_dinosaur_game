@@ -1,0 +1,21 @@
+Cơ thể
+head: đầu
+face: khuôn mặt
+hair: tóc
+eye: mắt
+nose: mũi
+mouth: miệng
+ear: tai
+hand: bàn tay
+foot: bàn chân
+arm: cánh tay
+leg: chân
+finger: ngón tay
+tooth: răng
+heart: trái tim
+back: lưng
+neck: cổ
+knee: đầu gối
+skin: da
+blood: máu
+bone: xương

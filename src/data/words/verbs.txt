@@ -1,0 +1,21 @@
+Động từ
+eat: ăn
+drink: uống
+sleep: ngủ
+read: đọc
+write: viết
+sing: hát
+dance: nhảy
+speak: nói
+listen: lắng nghe
+think: suy nghĩ
+learn: học
+teach: dạy
+buy: mua
+sell: bán
+open: mở
+close: đóng
+give: đưa
+take: lấy
+make: làm
+help: giúp đỡ

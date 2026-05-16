@@ -1,6 +1,11 @@
 export const WIN_PONT = 50;
 export const TIME_PER_TURN = 30;
 
+// Vocabulary game constants
+export const VOCAB_WORDS_PER_GAME = 10;
+export const VOCAB_TIME_PER_LETTER = 3;
+export const VOCAB_HINT_PENALTY = 1;
+
 const LETTER_POOL = "ABCDEGHILMNOPRSTUW";
 
 export const RULE_DEFS = {

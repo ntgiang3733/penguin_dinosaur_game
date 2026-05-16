@@ -1,0 +1,21 @@
+Tính từ
+big: to lớn
+small: nhỏ bé
+long: dài
+short: ngắn
+tall: cao
+new: mới
+old: cũ
+good: tốt
+bad: xấu
+happy: vui vẻ
+sad: buồn
+brave: dũng cảm
+kind: tử tế
+rich: giàu có
+poor: nghèo
+strong: mạnh mẽ
+beauty: xinh đẹp
+smart: thông minh
+funny: hài hước
+angry: tức giận

@@ -1,0 +1,19 @@
+Địa điểm
+house: ngôi nhà
+school: trường học
+park: công viên
+store: cửa hàng
+bank: ngân hàng
+beach: bãi biển
+city: thành phố
+farm: nông trại
+hotel: khách sạn
+market: chợ
+museum: bảo tàng
+shop: cửa hàng
+bridge: cây cầu
+castle: lâu đài
+river: dòng sông
+mountain: ngọn núi
+forest: khu rừng
+island: hòn đảo

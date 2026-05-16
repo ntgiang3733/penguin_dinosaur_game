@@ -1,0 +1,17 @@
+Màu sắc
+red: màu đỏ
+blue: màu xanh dương
+green: màu xanh lá
+yellow: màu vàng
+black: màu đen
+white: màu trắng
+pink: màu hồng
+brown: màu nâu
+orange: màu cam
+purple: màu tím
+gray: màu xám
+gold: màu vàng kim
+silver: màu bạc
+dark: tối
+light: sáng
+bright: sáng chói

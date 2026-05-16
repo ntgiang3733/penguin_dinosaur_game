@@ -1,0 +1,813 @@
+/* =============================================
+   Vocabulary Game Styles
+   Uses CSS custom properties from App.css
+   ============================================= */
+
+/* ---- Mode Selector ---- */
+.mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.mode-selector h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.mode-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.mode-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mode-card {
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mode-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.15);
+}
+
+.mode-card-icon {
+  font-size: 2.8rem;
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border-radius: var(--radius-lg);
+}
+
+.mode-card-info h3 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.mode-card-info p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Vocabulary Setup ---- */
+.v-setup-container {
+  width: 100%;
+  max-width: 640px;
+}
+
+.v-setup-card {
+  padding: 28px;
+}
+
+.v-setup-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.v-setup-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+}
+
+.v-setup-header p {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Topic grid */
+.v-topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.v-topic-card {
+  padding: 12px 10px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.v-topic-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.v-topic-card.selected {
+  border-color: var(--accent-purple);
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--accent-purple-light);
+  font-weight: 600;
+}
+
+.v-select-all {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.v-select-all-btn {
+  background: none;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 6px 18px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.2s;
+}
+
+.v-select-all-btn:hover {
+  border-color: var(--accent-purple);
+  color: var(--accent-purple-light);
+}
+
+.v-select-all-btn.active {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--accent-purple);
+  color: var(--accent-purple-light);
+}
+
+/* Mode toggle (1P/2P) */
+.v-mode-toggle {
+  display: flex;
+  gap: 0;
+  margin: 20px 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.v-mode-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.v-mode-btn:first-child {
+  border-right: 1px solid var(--glass-border);
+}
+
+.v-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.v-mode-btn.active {
+  background: var(--accent-purple);
+  color: white;
+}
+
+.v-mode-info {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* Name input in setup */
+.v-name-input {
+  margin-bottom: 16px;
+}
+
+.v-name-input label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Setup actions */
+.v-setup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.v-room-input {
+  margin-bottom: 4px;
+}
+
+.v-room-input label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ---- Vocabulary Waiting ---- */
+.v-waiting-container {
+  width: 100%;
+  max-width: 440px;
+}
+
+.v-waiting-card {
+  padding: 36px 28px;
+  text-align: center;
+}
+
+.v-waiting-card h2 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+}
+
+.v-waiting-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 24px;
+}
+
+.v-room-code-display {
+  background: rgba(139, 92, 246, 0.1);
+  border: 2px dashed var(--accent-purple);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: var(--accent-purple-light);
+  margin-bottom: 12px;
+  user-select: all;
+}
+
+.v-copy-btn {
+  background: var(--accent-purple);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.v-copy-btn:hover {
+  background: var(--accent-purple-dark);
+}
+
+.v-copied {
+  color: var(--accent-green);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.v-waiting-animation {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.v-waiting-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  animation: v-dot-bounce 1.4s ease-in-out infinite both;
+}
+
+.v-waiting-dot:nth-child(1) { animation-delay: 0s; }
+.v-waiting-dot:nth-child(2) { animation-delay: 0.2s; }
+.v-waiting-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes v-dot-bounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ---- Vocabulary Game (core) ---- */
+.v-game-container {
+  width: 100%;
+  max-width: 580px;
+}
+
+.v-game-card {
+  padding: 28px;
+}
+
+/* Top bar: score + progress */
+.v-game-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.v-score-display {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+.v-progress-display {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Vietnamese word clue */
+.v-clue-area {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.v-clue-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.v-clue-word {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+}
+
+/* Letter box grid */
+.v-letter-grid {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.v-letter-box {
+  width: 44px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.v-letter-box.empty {
+  color: transparent;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.v-letter-box.current {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+  animation: v-pulse-border 1.5s ease-in-out infinite;
+}
+
+.v-letter-box.correct {
+  border-color: var(--accent-green);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent-green);
+}
+
+.v-letter-box.hint {
+  border-color: var(--accent-orange);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-orange);
+}
+
+.v-letter-box.error {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+  animation: v-shake 0.4s ease;
+}
+
+@keyframes v-pulse-border {
+  0%, 100% { box-shadow: 0 0 8px rgba(139, 92, 246, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+}
+
+@keyframes v-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* Input area for typing */
+.v-input-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.v-input-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.v-input-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.v-input-cursor {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  color: var(--accent-purple);
+  pointer-events: none;
+  animation: v-blink 1s step-end infinite;
+  z-index: 1;
+}
+
+@keyframes v-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.v-letter-input {
+  width: 280px;
+  max-width: 90vw;
+  height: 52px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--accent-purple);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  outline: none;
+  caret-color: transparent;
+}
+
+.v-letter-input::placeholder {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.v-letter-input:focus {
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.3);
+}
+
+.v-letter-input:disabled {
+  opacity: 0.4;
+  border-color: var(--glass-border);
+}
+
+/* Hint button */
+.v-hint-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--accent-orange);
+  border-radius: var(--radius-md);
+  color: var(--accent-orange);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.v-hint-btn:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.v-hint-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.v-hint-penalty {
+  font-size: 0.75rem;
+  color: var(--accent-red);
+}
+
+/* Actions row */
+.v-game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+/* Player progress (2P) */
+.v-player-progress {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.v-player-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.v-player-status .v-player-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.v-player-status .v-player-dot.answered {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.v-player-status .v-player-dot.waiting {
+  background: var(--text-muted);
+}
+
+.v-player-status.me {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.v-player-status.opponent {
+  color: var(--text-secondary);
+}
+
+/* 1P end game button */
+.v-end-btn {
+  margin-top: 4px;
+}
+
+/* Word transition message */
+.v-word-result {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  min-height: 24px;
+}
+
+.v-word-result.correct-word {
+  color: var(--accent-green);
+}
+
+.v-word-result.timeout-word {
+  color: var(--accent-orange);
+}
+
+/* ---- Vocabulary Game Over ---- */
+.v-gameover-container {
+  width: 100%;
+  max-width: 520px;
+}
+
+.v-gameover-card {
+  padding: 32px 28px;
+}
+
+.v-result-banner {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.v-result-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.v-result-text {
+  font-size: 1.5rem;
+  margin: 0 0 4px;
+}
+
+.v-result-text.win { color: var(--accent-green); }
+.v-result-text.lose { color: var(--accent-red); }
+.v-result-text.draw { color: var(--accent-orange); }
+.v-result-text.solo { color: var(--accent-cyan); }
+
+.v-result-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+}
+
+.v-final-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.v-stat-box {
+  padding: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+}
+
+.v-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.v-stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* 2P Score comparison */
+.v-score-compare {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.v-score-player {
+  text-align: center;
+  padding: 16px 24px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  min-width: 100px;
+}
+
+.v-score-player.winner {
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid var(--accent-purple);
+}
+
+.v-score-name {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.v-score-num {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.v-score-vs {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* Word breakdown */
+.v-word-list {
+  margin-bottom: 24px;
+}
+
+.v-word-list h3 {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.v-word-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  font-size: 0.88rem;
+}
+
+.v-word-item:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.v-word-item .v-wi-vn {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.v-word-item .v-wi-en {
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+}
+
+.v-word-item .v-wi-points {
+  color: var(--accent-green);
+  font-weight: 600;
+  min-width: 40px;
+  text-align: right;
+}
+
+.v-word-item .v-wi-hints {
+  color: var(--accent-orange);
+  font-size: 0.78rem;
+  min-width: 50px;
+  text-align: right;
+}
+
+.v-gameover-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .v-topic-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+
+  .v-topic-card {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+
+  .v-letter-box {
+    width: 36px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+
+  .v-letter-grid {
+    gap: 5px;
+  }
+
+  .v-letter-input {
+    width: 200px;
+    max-width: 80vw;
+  }
+
+  .v-game-card {
+    padding: 20px 16px;
+  }
+
+  .v-clue-word {
+    font-size: 1.5rem;
+  }
+
+  .v-score-compare {
+    gap: 12px;
+  }
+
+  .v-score-player {
+    padding: 12px 16px;
+    min-width: 80px;
+  }
+
+  .v-score-num {
+    font-size: 1.4rem;
+  }
+
+  .v-final-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}

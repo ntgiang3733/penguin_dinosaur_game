@@ -3,7 +3,7 @@ import { createRoom, joinRoom, joinDefaultRoom } from "../firebase/gameService";
 import { TIME_PER_TURN } from "../constants";
 import GameHistory from "./GameHistory";
 
-export default function Lobby({ onJoinedRoom }) {
+export default function Lobby({ onJoinedRoom, onBackToModeSelect }) {
   const [playerName, setPlayerName] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -89,6 +89,15 @@ export default function Lobby({ onJoinedRoom }) {
   return (
     <div className="lobby-container">
       <div className="lobby-card glass-card">
+        {onBackToModeSelect && (
+          <button
+            className="btn btn-ghost"
+            onClick={onBackToModeSelect}
+            style={{ alignSelf: "flex-start", marginBottom: 0, padding: "6px 12px", fontSize: "0.85rem" }}
+          >
+            ← Chọn chế độ khác
+          </button>
+        )}
         <div className="lobby-header">
           <div className="logo-icon">🐧 ⚡️ 🦖</div>
           <h1 className="game-title">PENGUIN - DINOSAUR</h1>

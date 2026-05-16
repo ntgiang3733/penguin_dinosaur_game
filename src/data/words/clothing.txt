@@ -1,0 +1,19 @@
+Quần áo
+shirt: áo sơ mi
+pants: quần dài
+dress: váy
+shoes: giày
+hat: mũ
+coat: áo khoác
+sock: tất
+belt: thắt lưng
+skirt: chân váy
+jacket: áo khoác ngắn
+boot: ủng
+glove: găng tay
+scarf: khăn quàng
+suit: bộ vest
+ring: nhẫn
+watch: đồng hồ
+bag: túi xách
+jeans: quần jean

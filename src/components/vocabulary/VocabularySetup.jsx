@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { createVocabRoom, joinVocabRoom } from "../../firebase/vocabGameService";
-import { getTopicList, pickRandomWords, pickWordsFor2P } from "../../data/wordLoader";
+import { joinDefaultVocabRoom } from "../../firebase/vocabGameService";
+import { getTopicList, pickRandomWords } from "../../data/wordLoader";
 import { VOCAB_WORDS_PER_GAME, VOCAB_TIME_PER_LETTER } from "../../constants";
 import "../../VocabGame.css";
 
@@ -10,11 +10,9 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
   const [selectedTopics, setSelectedTopics] = useState(new Set());
   const [playerName, setPlayerName] = useState("");
   const [mode, setMode] = useState("1p");
-  const [roomCode, setRoomCode] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-  const [isJoining, setIsJoining] = useState(false);
+  const [isJoiningDuo, setIsJoiningDuo] = useState(false);
   const [error, setError] = useState("");
-  const [showRoomInput, setShowRoomInput] = useState(false);
+  const [expandedTopic, setExpandedTopic] = useState(null);
 
   const toggleTopic = (id) => {
     setSelectedTopics((prev) => {
@@ -46,7 +44,7 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
     onStart1P(words);
   };
 
-  const handleCreateRoom = async () => {
+  const handleJoinDuo = async () => {
     if (!playerName.trim()) {
       setError("Vui lòng nhập tên của bạn");
       return;
@@ -56,49 +54,15 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
       return;
     }
 
-    const words = pickWordsFor2P([...selectedTopics]);
-    if (words.length < VOCAB_WORDS_PER_GAME) {
-      setError(`Cần ít nhất ${VOCAB_WORDS_PER_GAME} từ trong các chủ đề đã chọn (hiện có ${words.length})`);
-      return;
-    }
-
-    setIsCreating(true);
+    setIsJoiningDuo(true);
     setError("");
     try {
-      const result = await createVocabRoom(playerName.trim(), [...selectedTopics], words);
-      onStart2P(result.roomId, result.playerRole);
-    } catch (err) {
-      setError("Không thể tạo phòng. Vui lòng thử lại.");
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const handleJoinRoom = async () => {
-    if (!playerName.trim()) {
-      setError("Vui lòng nhập tên của bạn");
-      return;
-    }
-    if (!roomCode.trim()) {
-      setError("Vui lòng nhập mã phòng");
-      return;
-    }
-    setIsJoining(true);
-    setError("");
-    try {
-      const result = await joinVocabRoom(roomCode.trim().toUpperCase(), playerName.trim());
+      const result = await joinDefaultVocabRoom(playerName.trim(), [...selectedTopics]);
       onStart2P(result.roomId, result.playerRole);
     } catch (err) {
       setError(err.message);
     } finally {
-      setIsJoining(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      if (showRoomInput) handleJoinRoom();
-      else handleStart1P();
+      setIsJoiningDuo(false);
     }
   };
 
@@ -123,18 +87,41 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
         </div>
 
         <div className="v-topic-grid">
-          {ALL_TOPICS.map((topic) => (
-            <div
-              key={topic.id}
-              className={`v-topic-card ${selectedTopics.has(topic.id) ? "selected" : ""}`}
-              onClick={() => toggleTopic(topic.id)}
-            >
-              {topic.topicName}
-              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: 2 }}>
-                {topic.words.length} từ
+          {ALL_TOPICS.map((topic) => {
+            const isExpanded = expandedTopic === topic.id;
+            return (
+              <div
+                key={topic.id}
+                className={`v-topic-card ${selectedTopics.has(topic.id) ? "selected" : ""} ${isExpanded ? "expanded" : ""}`}
+              >
+                <div className="v-topic-card-main" onClick={() => toggleTopic(topic.id)}>
+                  <span className="v-topic-name">{topic.topicName}</span>
+                  <span className="v-topic-count">{topic.words.length} từ</span>
+                </div>
+                <button
+                  className={`v-topic-preview-btn ${isExpanded ? "active" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpandedTopic(isExpanded ? null : topic.id);
+                  }}
+                  title="Xem trước từ vựng"
+                >
+                  {isExpanded ? "✕" : "👁"}
+                </button>
+                {isExpanded && (
+                  <div className="v-topic-words-preview slide-up">
+                    {topic.words.map((w, i) => (
+                      <span key={i} className="v-preview-word">
+                        <span className="v-pw-en">{w.english}</span>
+                        <span className="v-pw-arrow">→</span>
+                        <span className="v-pw-vn">{w.vietnamese}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Name input - only for 2P mode */}
@@ -148,7 +135,6 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
               placeholder="Nhập tên..."
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              onKeyDown={handleKeyPress}
               maxLength={20}
               style={{ width: "100%", boxSizing: "border-box" }}
             />
@@ -159,7 +145,7 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
         <div className="v-mode-toggle">
           <button
             className={`v-mode-btn ${mode === "1p" ? "active" : ""}`}
-            onClick={() => { setMode("1p"); setShowRoomInput(false); }}
+            onClick={() => setMode("1p")}
           >
             🎮 1 Người Chơi
           </button>
@@ -195,50 +181,18 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
           </div>
         )}
 
-        {mode === "2p" && !showRoomInput && (
+        {mode === "2p" && (
           <div className="v-setup-actions">
             <button
               className="btn btn-primary btn-large"
-              onClick={handleCreateRoom}
-              disabled={isCreating || !playerName.trim() || selectedTopics.size === 0}
+              onClick={handleJoinDuo}
+              disabled={isJoiningDuo || !playerName.trim() || selectedTopics.size === 0}
             >
-              {isCreating ? <span className="loading-spinner"></span> : "🏠 Tạo Phòng"}
-            </button>
-            <button
-              className="btn btn-secondary btn-large"
-              onClick={() => setShowRoomInput(true)}
-              disabled={!playerName.trim()}
-            >
-              🚪 Vào Phòng
-            </button>
-          </div>
-        )}
-
-        {mode === "2p" && showRoomInput && (
-          <div className="v-setup-actions">
-            <div className="v-room-input">
-              <label htmlFor="v-room-code">Mã Phòng</label>
-              <input
-                id="v-room-code"
-                type="text"
-                className="input-field input-room-code"
-                placeholder="Nhập mã phòng (6 ký tự)..."
-                value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                onKeyDown={handleKeyPress}
-                maxLength={6}
-                style={{ width: "100%", boxSizing: "border-box" }}
-              />
-            </div>
-            <button
-              className="btn btn-primary btn-large"
-              onClick={handleJoinRoom}
-              disabled={isJoining || !playerName.trim() || !roomCode.trim()}
-            >
-              {isJoining ? <span className="loading-spinner"></span> : "🚀 Tham Gia"}
-            </button>
-            <button className="btn btn-ghost" onClick={() => setShowRoomInput(false)}>
-              ← Quay lại
+              {isJoiningDuo ? (
+                <span className="loading-spinner"></span>
+              ) : (
+                "⚔️ Chơi 2 Người"
+              )}
             </button>
           </div>
         )}
@@ -249,7 +203,6 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
           </div>
         )}
 
-        {/* Back button */}
         <button
           className="btn btn-ghost"
           onClick={onBack}

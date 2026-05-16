@@ -1,4 +1,5 @@
 import { db } from "./config";
+import { pickWordsFor2P } from "../data/wordLoader";
 import {
   ref,
   set,
@@ -172,6 +173,113 @@ export async function advanceVocabWord(roomId, expectedIndex) {
       player2Answered: false,
     });
   }
+}
+
+/**
+ * Listen to room changes in real-time
+ */
+/**
+ * Join the fixed default vocab room (no room code needed).
+ * Same pattern as joinDefaultRoom in gameService.js.
+ */
+export async function joinDefaultVocabRoom(playerName, selectedTopics) {
+  const roomId = "VOCAB_DUO";
+  const roomRef = ref(db, `vocabRooms/${roomId}`);
+  const snapshot = await get(roomRef);
+  const playerId = generatePlayerId();
+
+  if (!snapshot.exists()) {
+    // Create the default room
+    const gameWords = pickWordsFor2P(selectedTopics);
+    const roomData = {
+      status: "waiting",
+      selectedTopics,
+      gameWords,
+      currentWordIndex: 0,
+      currentWordStartTime: null,
+      player1Answered: false,
+      player2Answered: false,
+      winner: null,
+      finishReason: null,
+      createdAt: Date.now(),
+      players: {
+        player1: {
+          name: playerName,
+          score: 0,
+          wordsCompleted: 0,
+          id: playerId,
+          connected: true,
+        },
+      },
+    };
+    await set(roomRef, roomData);
+    const playerRef = ref(db, `vocabRooms/${roomId}/players/player1/connected`);
+    onDisconnect(playerRef).set(false);
+    return { roomId, playerId, playerRole: "player1" };
+  }
+
+  const roomData = snapshot.val();
+
+  // If finished, reset and retry
+  if (roomData.status === "finished") {
+    const gameWords = pickWordsFor2P(roomData.selectedTopics || selectedTopics);
+    await update(roomRef, {
+      status: "waiting",
+      currentWordIndex: 0,
+      currentWordStartTime: null,
+      player1Answered: false,
+      player2Answered: false,
+      winner: null,
+      finishReason: null,
+      gameWords,
+      "players/player1/score": 0,
+      "players/player1/connected": false,
+      "players/player1/wordsCompleted": 0,
+      "players/player2/score": 0,
+      "players/player2/connected": false,
+      "players/player2/wordsCompleted": 0,
+    });
+    return joinDefaultVocabRoom(playerName, selectedTopics);
+  }
+
+  // Check if player1 is disconnected
+  if (!roomData.players?.player1 || !roomData.players.player1.connected) {
+    const hasPlayer2 = roomData.players?.player2?.connected;
+    await update(roomRef, {
+      "players/player1": {
+        name: playerName,
+        score: 0,
+        wordsCompleted: 0,
+        id: playerId,
+        connected: true,
+      },
+      status: hasPlayer2 ? "playing" : "waiting",
+      currentWordStartTime: hasPlayer2 ? Date.now() : null,
+    });
+    const playerRef = ref(db, `vocabRooms/${roomId}/players/player1/connected`);
+    onDisconnect(playerRef).set(false);
+    return { roomId, playerId, playerRole: "player1" };
+  }
+
+  // Try to join as player2
+  if (!roomData.players?.player2 || !roomData.players.player2.connected) {
+    await update(roomRef, {
+      "players/player2": {
+        name: playerName,
+        score: 0,
+        wordsCompleted: 0,
+        id: playerId,
+        connected: true,
+      },
+      status: "playing",
+      currentWordStartTime: Date.now(),
+    });
+    const playerRef = ref(db, `vocabRooms/${roomId}/players/player2/connected`);
+    onDisconnect(playerRef).set(false);
+    return { roomId, playerId, playerRole: "player2" };
+  }
+
+  throw new Error("Phòng hiện đã đầy. Vui lòng thử lại sau.");
 }
 
 /**

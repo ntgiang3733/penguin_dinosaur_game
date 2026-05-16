@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useReducer, useCallback } from "react";
+import { ref, get } from "firebase/database";
+import { db } from "../../firebase/config";
 import Timer from "../Timer";
 import {
   listenToVocabRoom,
@@ -289,14 +291,21 @@ export default function VocabularyGame({
       await submitVocabAnswer(roomId, playerRole, points, hintsThisWord2P);
       setWordResult2P("correct");
 
-      // Try to advance after a short delay
-      setTimeout(async () => {
-        try {
-          await advanceVocabWord(roomId, prevIndex);
-        } catch (err) {
-          console.error("Advance error:", err);
-        }
-      }, 600);
+      // Re-read from Firebase to check if both players have now answered
+      const roomSnapshot = await get(ref(db, `vocabRooms/${roomId}`));
+      const fresh = roomSnapshot.val();
+      const otherRole = playerRole === "player1" ? "player2" : "player1";
+      const bothAnswered = fresh?.player1Answered && fresh?.player2Answered;
+
+      if (bothAnswered) {
+        setTimeout(async () => {
+          try {
+            await advanceVocabWord(roomId, prevIndex);
+          } catch (err) {
+            console.error("Advance error:", err);
+          }
+        }, 600);
+      }
     } catch (err) {
       console.error("Submit error:", err);
     }

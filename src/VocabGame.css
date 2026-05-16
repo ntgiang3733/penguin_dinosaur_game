@@ -108,9 +108,10 @@
 }
 
 .v-topic-card {
-  padding: 12px 10px;
-  text-align: center;
-  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   border: 2px solid transparent;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.03);
@@ -118,18 +119,96 @@
   font-size: 0.85rem;
   transition: all 0.2s ease;
   user-select: none;
+  overflow: hidden;
 }
 
-.v-topic-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
+.v-topic-card.expanded {
+  grid-column: 1 / -1;
 }
 
 .v-topic-card.selected {
   border-color: var(--accent-purple);
   background: rgba(139, 92, 246, 0.12);
   color: var(--accent-purple-light);
+}
+
+.v-topic-card-main {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0 12px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.v-topic-card:hover .v-topic-card-main {
+  color: var(--text-primary);
+}
+
+.v-topic-card.selected .v-topic-card-main {
   font-weight: 600;
+}
+
+.v-topic-name {
+  font-size: 0.85rem;
+}
+
+.v-topic-count {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.v-topic-preview-btn {
+  flex-shrink: 0;
+  padding: 12px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  border-radius: 0 var(--radius-sm) 0 0;
+}
+
+.v-topic-preview-btn:hover {
+  color: var(--accent-purple-light);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.v-topic-preview-btn.active {
+  color: var(--accent-red);
+}
+
+.v-topic-words-preview {
+  width: 100%;
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 0.78rem;
+}
+
+.v-preview-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.v-pw-en {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.v-pw-arrow {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.v-pw-vn {
+  color: var(--text-secondary);
 }
 
 .v-select-all {
@@ -745,9 +824,20 @@
     gap: 8px;
   }
 
-  .v-topic-card {
-    padding: 10px 8px;
+  .v-topic-card-main {
+    padding: 10px 0 10px 8px;
+  }
+
+  .v-topic-name {
     font-size: 0.8rem;
+  }
+
+  .v-topic-preview-btn {
+    padding: 10px 8px;
+  }
+
+  .v-topic-words-preview {
+    font-size: 0.72rem;
   }
 
   .v-letter-box {

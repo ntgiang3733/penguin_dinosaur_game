@@ -188,17 +188,13 @@ export default function VocabularyGame({
     return "empty";
   }
 
-  // Handle key input
-  const handleKeyDown = useCallback(
-    (e) => {
+  // Process a typed letter (used by both onKeyDown and onChange)
+  const processLetter = useCallback(
+    (char) => {
       if (!currentWord || amAnswered || transitioning) return;
-      // Ignore non-letter keys
-      if (e.key.length !== 1 || !/^[a-zA-Z]$/.test(e.key)) {
-        return;
-      }
-      e.preventDefault();
+      if (!/^[a-zA-Z]$/.test(char)) return;
 
-      const typed = e.key.toLowerCase();
+      const typed = char.toLowerCase();
       const target = currentWord.english[correctCount];
 
       if (typed === target) {
@@ -214,6 +210,32 @@ export default function VocabularyGame({
       }
     },
     [currentWord, correctCount, amAnswered, transitioning, is1P]
+  );
+
+  // Desktop: handle keydown events
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (!currentWord || amAnswered || transitioning) return;
+      if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
+        e.preventDefault();
+        processLetter(e.key);
+      }
+    },
+    [currentWord, amAnswered, transitioning, processLetter]
+  );
+
+  // Mobile: handle onChange (virtual keyboard doesn't reliably fire keydown)
+  const handleInputChange = useCallback(
+    (e) => {
+      const val = e.target.value;
+      if (!val) return;
+      // Take the last character typed
+      const lastChar = val[val.length - 1];
+      processLetter(lastChar);
+      // Clear input immediately so next keystroke is fresh
+      e.target.value = "";
+    },
+    [processLetter]
   );
 
   // Check word completion for 2P
@@ -320,7 +342,7 @@ export default function VocabularyGame({
   };
 
   const allLettersRevealed = currentWord
-    ? correctCount + hintRevealed.size >= currentWord.english.length
+    ? correctCount >= currentWord.english.length
     : false;
 
   const timerDuration = currentWord
@@ -379,9 +401,9 @@ export default function VocabularyGame({
           </div>
         )}
 
-        {/* Letter grid */}
+        {/* Letter grid - tap to focus keyboard on mobile */}
         {currentWord && (
-          <div className="v-letter-grid">
+          <div className="v-letter-grid" onClick={() => inputRef.current?.focus()}>
             {targetLetters.map((letter, i) => {
               const state = getLetterState(i);
               let displayChar = "";
@@ -408,28 +430,22 @@ export default function VocabularyGame({
           {wordResult === "timeout" && <>⏰ Hết giờ! Không được điểm từ này</>}
         </div>
 
-        {/* Letter input area */}
+        {/* Hidden input (captures keyboard on both desktop and mobile) */}
         {currentWord && !amAnswered && !transitioning && (
-          <div className="v-input-area">
-            <div className="v-input-label">
-              Nhấn phím chữ cái để gõ từng ký tự ↓
-            </div>
-            <div className="v-input-wrapper">
-              <div className="v-input-cursor">▎</div>
-              <input
-                ref={inputRef}
-                className="v-letter-input"
-                value=""
-                onKeyDown={handleKeyDown}
-                placeholder="gõ vào đây..."
-                readOnly
-                disabled={!!amAnswered || !!transitioning}
-                autoComplete="off"
-                spellCheck="false"
-                autoFocus
-              />
-            </div>
-          </div>
+          <input
+            ref={inputRef}
+            className="v-letter-input"
+            onKeyDown={handleKeyDown}
+            onChange={handleInputChange}
+            disabled={!!amAnswered || !!transitioning}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+            inputMode="text"
+            enterKeyHint="done"
+            autoFocus
+          />
         )}
 
         {amAnswered && !is1P && (

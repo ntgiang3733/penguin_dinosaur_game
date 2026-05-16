@@ -7,7 +7,7 @@ import "../../VocabGame.css";
 const ALL_TOPICS = getTopicList();
 
 export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
-  const [selectedTopics, setSelectedTopics] = useState(new Set(ALL_TOPICS.map((t) => t.id)));
+  const [selectedTopics, setSelectedTopics] = useState(new Set());
   const [playerName, setPlayerName] = useState("");
   const [mode, setMode] = useState("1p");
   const [roomCode, setRoomCode] = useState("");
@@ -34,10 +34,6 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
   };
 
   const handleStart1P = () => {
-    if (!playerName.trim()) {
-      setError("Vui lòng nhập tên của bạn");
-      return;
-    }
     if (selectedTopics.size === 0) {
       setError("Vui lòng chọn ít nhất 1 chủ đề");
       return;
@@ -141,21 +137,23 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
           ))}
         </div>
 
-        {/* Name input */}
-        <div className="v-name-input">
-          <label htmlFor="v-player-name">Tên của bạn</label>
-          <input
-            id="v-player-name"
-            type="text"
-            className="input-field"
-            placeholder="Nhập tên..."
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            onKeyDown={handleKeyPress}
-            maxLength={20}
-            style={{ width: "100%", boxSizing: "border-box" }}
-          />
-        </div>
+        {/* Name input - only for 2P mode */}
+        {mode === "2p" && (
+          <div className="v-name-input">
+            <label htmlFor="v-player-name">Tên của bạn</label>
+            <input
+              id="v-player-name"
+              type="text"
+              className="input-field"
+              placeholder="Nhập tên..."
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              onKeyDown={handleKeyPress}
+              maxLength={20}
+              style={{ width: "100%", boxSizing: "border-box" }}
+            />
+          </div>
+        )}
 
         {/* Mode toggle */}
         <div className="v-mode-toggle">
@@ -190,7 +188,7 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
             <button
               className="btn btn-primary btn-large"
               onClick={handleStart1P}
-              disabled={!playerName.trim() || selectedTopics.size === 0}
+              disabled={selectedTopics.size === 0}
             >
               🚀 Bắt Đầu
             </button>

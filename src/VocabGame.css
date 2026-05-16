@@ -451,6 +451,8 @@
   justify-content: center;
   align-items: center;
   gap: 0;
+  cursor: text;
+  padding: 12px 0;
 }
 
 .v-input-cursor {
@@ -470,33 +472,11 @@
 }
 
 .v-letter-input {
-  width: 280px;
-  max-width: 90vw;
-  height: 52px;
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid var(--accent-purple);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  outline: none;
-  caret-color: transparent;
-}
-
-.v-letter-input::placeholder {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 400;
-}
-
-.v-letter-input:focus {
-  box-shadow: 0 0 16px rgba(139, 92, 246, 0.3);
-}
-
-.v-letter-input:disabled {
-  opacity: 0.4;
-  border-color: var(--glass-border);
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
 }
 
 /* Hint button */
@@ -780,9 +760,8 @@
     gap: 5px;
   }
 
-  .v-letter-input {
-    width: 200px;
-    max-width: 80vw;
+  .v-input-label {
+    font-size: 0.75rem;
   }
 
   .v-game-card {

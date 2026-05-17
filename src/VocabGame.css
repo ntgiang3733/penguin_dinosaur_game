@@ -185,9 +185,11 @@
   padding: 8px 10px 10px;
   border-top: 1px solid var(--glass-border);
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  font-size: 0.78rem;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.92rem;
+  max-height: 320px;
+  overflow-y: auto;
 }
 
 .v-preview-word {
@@ -209,6 +211,51 @@
 
 .v-pw-vn {
   color: var(--text-secondary);
+}
+
+.v-preview-select-all {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.v-preview-select-all-btn {
+  background: none;
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: all 0.2s;
+}
+
+.v-preview-select-all-btn:hover {
+  border-color: var(--accent-purple);
+  color: var(--accent-purple-light);
+}
+
+.v-preview-word-check {
+  cursor: pointer;
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.v-preview-word-check:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.v-preview-checkbox {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent-purple);
+  cursor: pointer;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .v-select-all {
@@ -837,7 +884,7 @@
   }
 
   .v-topic-words-preview {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
   }
 
   .v-letter-box {

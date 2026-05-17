@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { joinDefaultVocabRoom } from "../../firebase/vocabGameService";
-import { getTopicList, pickRandomWords } from "../../data/wordLoader";
+import { getTopicList } from "../../data/wordLoader";
 import { VOCAB_WORDS_PER_GAME, VOCAB_TIME_PER_LETTER } from "../../constants";
 import "../../VocabGame.css";
 
 const ALL_TOPICS = getTopicList();
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
   const [selectedTopics, setSelectedTopics] = useState(new Set());
@@ -13,6 +22,7 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
   const [isJoiningDuo, setIsJoiningDuo] = useState(false);
   const [error, setError] = useState("");
   const [expandedTopic, setExpandedTopic] = useState(null);
+  const [wordSelections, setWordSelections] = useState({});
 
   const toggleTopic = (id) => {
     setSelectedTopics((prev) => {
@@ -31,17 +41,34 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
     }
   };
 
+  // Collect selected words across all selected topics
+  const collectSelectedWords = () => {
+    const allWords = [];
+    for (const topicId of selectedTopics) {
+      const topic = ALL_TOPICS.find((t) => t.id === topicId);
+      if (!topic) continue;
+      const selections = wordSelections[topicId];
+      if (!selections) {
+        // Topic not previewed yet — all words are selected by default
+        allWords.push(...topic.words);
+      } else {
+        allWords.push(...topic.words.filter((w) => selections.has(w.english)));
+      }
+    }
+    return allWords;
+  };
+
   const handleStart1P = () => {
     if (selectedTopics.size === 0) {
       setError("Vui lòng chọn ít nhất 1 chủ đề");
       return;
     }
-    const words = pickRandomWords([...selectedTopics], null);
-    if (words.length === 0) {
-      setError("Không có từ nào trong chủ đề đã chọn");
+    const allWords = collectSelectedWords();
+    if (allWords.length === 0) {
+      setError("Không có từ nào được chọn. Hãy mở preview và chọn ít nhất 1 từ.");
       return;
     }
-    onStart1P(words);
+    onStart1P(shuffle(allWords));
   };
 
   const handleJoinDuo = async () => {
@@ -53,11 +80,16 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
       setError("Vui lòng chọn ít nhất 1 chủ đề");
       return;
     }
+    const allWords = collectSelectedWords();
+    if (allWords.length === 0) {
+      setError("Không có từ nào được chọn. Hãy mở preview và chọn ít nhất 1 từ.");
+      return;
+    }
 
     setIsJoiningDuo(true);
     setError("");
     try {
-      const result = await joinDefaultVocabRoom(playerName.trim(), [...selectedTopics]);
+      const result = await joinDefaultVocabRoom(playerName.trim(), [...selectedTopics], allWords);
       onStart2P(result.roomId, result.playerRole);
     } catch (err) {
       setError(err.message);
@@ -67,6 +99,44 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
   };
 
   const allSelected = selectedTopics.size === ALL_TOPICS.length;
+
+  // Word-level selection within a topic's preview
+  const initWordSelections = (topicId, words) => {
+    if (!wordSelections[topicId]) {
+      setWordSelections((prev) => ({
+        ...prev,
+        [topicId]: new Set(words.map((w) => w.english)),
+      }));
+    }
+  };
+
+  const toggleWord = (topicId, english) => {
+    setWordSelections((prev) => {
+      const current = prev[topicId];
+      if (!current) return prev;
+      const next = new Set(current);
+      if (next.has(english)) next.delete(english);
+      else next.add(english);
+      return { ...prev, [topicId]: next };
+    });
+  };
+
+  const toggleAllWordsInTopic = (topicId, words) => {
+    setWordSelections((prev) => {
+      const current = prev[topicId];
+      const allSelected = !current || current.size === words.length;
+      if (allSelected) {
+        return { ...prev, [topicId]: new Set() };
+      }
+      return { ...prev, [topicId]: new Set(words.map((w) => w.english)) };
+    });
+  };
+
+  const isWordSelected = (topicId, english) => {
+    const selections = wordSelections[topicId];
+    if (!selections) return true; // Not initialized yet = all selected
+    return selections.has(english);
+  };
 
   return (
     <div className="v-setup-container">
@@ -102,6 +172,9 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
                   className={`v-topic-preview-btn ${isExpanded ? "active" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (!isExpanded) {
+                      initWordSelections(topic.id, topic.words);
+                    }
                     setExpandedTopic(isExpanded ? null : topic.id);
                   }}
                   title="Xem trước từ vựng"
@@ -110,12 +183,31 @@ export default function VocabularySetup({ onStart1P, onStart2P, onBack }) {
                 </button>
                 {isExpanded && (
                   <div className="v-topic-words-preview slide-up">
+                    <div className="v-preview-select-all">
+                      <button
+                        className="v-preview-select-all-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleAllWordsInTopic(topic.id, topic.words);
+                        }}
+                      >
+                        {wordSelections[topic.id] && wordSelections[topic.id].size === topic.words.length
+                          ? "Bỏ chọn tất cả"
+                          : "Chọn tất cả"}
+                      </button>
+                    </div>
                     {topic.words.map((w, i) => (
-                      <span key={i} className="v-preview-word">
+                      <label key={i} className="v-preview-word v-preview-word-check">
+                        <input
+                          type="checkbox"
+                          className="v-preview-checkbox"
+                          checked={isWordSelected(topic.id, w.english)}
+                          onChange={() => toggleWord(topic.id, w.english)}
+                        />
                         <span className="v-pw-en">{w.english}</span>
                         <span className="v-pw-arrow">→</span>
                         <span className="v-pw-vn">{w.vietnamese}</span>
-                      </span>
+                      </label>
                     ))}
                   </div>
                 )}

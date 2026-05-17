@@ -1,5 +1,5 @@
 import { db } from "./config";
-import { pickWordsFor2P } from "../data/wordLoader";
+import { pickWordsFor2P, pickWordsFromList } from "../data/wordLoader";
 import {
   ref,
   set,
@@ -182,7 +182,7 @@ export async function advanceVocabWord(roomId, expectedIndex) {
  * Join the fixed default vocab room (no room code needed).
  * Same pattern as joinDefaultRoom in gameService.js.
  */
-export async function joinDefaultVocabRoom(playerName, selectedTopics) {
+export async function joinDefaultVocabRoom(playerName, selectedTopics, customWords = null) {
   const roomId = "VOCAB_DUO";
   const roomRef = ref(db, `vocabRooms/${roomId}`);
   const snapshot = await get(roomRef);
@@ -190,7 +190,9 @@ export async function joinDefaultVocabRoom(playerName, selectedTopics) {
 
   if (!snapshot.exists()) {
     // Create the default room
-    const gameWords = pickWordsFor2P(selectedTopics);
+    const gameWords = customWords
+      ? pickWordsFromList(customWords, 10)
+      : pickWordsFor2P(selectedTopics);
     const roomData = {
       status: "waiting",
       selectedTopics,
@@ -222,7 +224,9 @@ export async function joinDefaultVocabRoom(playerName, selectedTopics) {
 
   // If finished, reset and retry
   if (roomData.status === "finished") {
-    const gameWords = pickWordsFor2P(roomData.selectedTopics || selectedTopics);
+    const gameWords = customWords
+      ? pickWordsFromList(customWords, 10)
+      : pickWordsFor2P(roomData.selectedTopics || selectedTopics);
     await update(roomRef, {
       status: "waiting",
       currentWordIndex: 0,

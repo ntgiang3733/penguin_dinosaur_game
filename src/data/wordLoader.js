@@ -84,3 +84,14 @@ export function pickRandomWords(selectedTopicIds, count = null) {
 export function pickWordsFor2P(selectedTopicIds) {
   return pickRandomWords(selectedTopicIds, VOCAB_WORDS_PER_GAME);
 }
+
+/**
+ * Pick `count` random words from a pre-filtered word list.
+ * @param {{english: string, vietnamese: string}[]} words
+ * @param {number} count
+ */
+export function pickWordsFromList(words, count) {
+  const shuffled = shuffle(words);
+  if (count >= shuffled.length) return shuffled;
+  return shuffled.slice(0, count);
+}

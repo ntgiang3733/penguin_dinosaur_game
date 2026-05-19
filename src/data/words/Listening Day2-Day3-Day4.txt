@@ -1,0 +1,24 @@
+merchandise: hàng hóa
+sprinkl: tưới
+hose: vòi phun nước
+construction site: côn trường xây dựng
+cabinet: tủ
+bulletin: bản tin
+microscope: kính hiển vi
+examine: xem xét, nghiên cứu
+apron: tạp dề 
+stairway: cầu thang
+hand out: trao, phát
+furniture: đồ nội thất
+counter: quầy tính tiền
+vase: lọ hoa
+dock: bến tàu
+sailor: thủy thủ
+overlook: tầm nhìn, xoay ra
+intersection: giao lộ, ngã tư
+pouring: rót(nước)
+suitecase: vali
+tire: lốp xe
+carpet: thảm
+wheelbarrow: xe cút kít
+chop: thái, chặt

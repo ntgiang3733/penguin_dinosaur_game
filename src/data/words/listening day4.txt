@@ -1,0 +1,9 @@
+listening_d4
+assistant: trợ lý
+departmant: phòng ban, bộ phận
+maintenance: bảo trì
+accounting office: phòng kế toán
+install: cài đặt
+reach: với tới, liên lạc với
+charge: giá tiền, tiền công
+fair: hội chợ
